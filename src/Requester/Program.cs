@@ -23,21 +23,22 @@
         {
             BasicConfigurator.Configure();
 
-            if (args.Length < 2)
-            {
-                PrintHelp();
-                Environment.Exit(-1);
-            }
+            //if (args.Length < 2)
+            //{
+            //    Console.WriteLine(args[0]);
+            //    PrintHelp("args");
+            //    Environment.Exit(-1);
+            //}
 
-            bool isInstallOrUninstall = args[0].Contains("install");
-            string interval = args[isInstallOrUninstall ? 2 : 1];
+            //bool isInstallOrUninstall = args[0].Contains("install");
+            string interval = "4000";
 
-            int res;
-            if (!int.TryParse(interval, out res))
-            {
-                PrintHelp();
-                Environment.Exit(-1);
-            }
+            //int res;
+            //if (!int.TryParse(interval, out res))
+            //{
+            //    PrintHelp("interval");
+            //    Environment.Exit(-1);
+            //}
 
             if (!File.Exists(UrlFile))
             {
@@ -76,7 +77,7 @@
                     });
         }
 
-        private static void PrintHelp()
+        private static void PrintHelp(string entryPoint)
         {
             Console.WriteLine(
                 @"Too few args: requester install <url> <interval>
@@ -86,7 +87,8 @@
                  interval: 300 seconds
 
                 requester install https://github.com 300
-                ");
+
+                "+ entryPoint );
         }
 
         private void Start(string url, int interval)
