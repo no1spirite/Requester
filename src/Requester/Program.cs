@@ -12,9 +12,9 @@
 
     internal class Program
     {
-        private readonly static string IntervalFile = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "/interval.txt");
+        private readonly static string IntervalFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "interval.txt");
 
-        private readonly static string UrlFile = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "/url.txt");
+        private readonly static string UrlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "url.txt");
 
         private CancellationToken token;
 
@@ -41,41 +41,41 @@
             //    Environment.Exit(-1);
             //}
 
-            //if (!File.Exists(UrlFile))
-            //{
-            //    File.WriteAllText(UrlFile, "http://portfolio-14.apphb.com/");
-            //}
+            if (!File.Exists(UrlFile))
+            {
+                File.WriteAllText(UrlFile, "http://portfolio-14.apphb.com/");
+            }
 
-            //if (!File.Exists(IntervalFile))
-            //{
-            //    File.WriteAllText(IntervalFile, "40");
-            //}
+            if (!File.Exists(IntervalFile))
+            {
+                File.WriteAllText(IntervalFile, "40");
+            }
 
-            //Thread.CurrentThread.Name = "Requester Entrypoint Thread";
+            Thread.CurrentThread.Name = "Requester Entrypoint Thread";
 
-            //HostFactory.Run(
-            //    x =>
-            //        {
-            //            x.Service<Program>(
-            //                s =>
-            //                    {
-            //                        s.ConstructUsing(name => new Program());
-            //                        s.WhenStarted(
-            //                            p =>
-            //                            p.Start(File.ReadAllText(UrlFile), int.Parse(File.ReadAllText(IntervalFile))));
-            //                        s.WhenStopped(p => p.Stop());
-            //                    });
-            //            x.RunAsLocalSystem();
-            //            x.BeforeInstall(
-            //                () =>
-            //                    {
-            //                        File.WriteAllText(UrlFile, args[1]);
-            //                        File.WriteAllText("inteval.txt", interval);
-            //                    });
-            //            x.SetDescription(string.Format("Requests an url every interval"));
-            //            x.SetDisplayName("Requester");
-            //            x.SetServiceName("Requester");
-            //        });
+            HostFactory.Run(
+                x =>
+                {
+                    x.Service<Program>(
+                        s =>
+                        {
+                            s.ConstructUsing(name => new Program());
+                            s.WhenStarted(
+                                p =>
+                                p.Start(File.ReadAllText(UrlFile), int.Parse(File.ReadAllText(IntervalFile))));
+                            s.WhenStopped(p => p.Stop());
+                        });
+                    x.RunAsLocalSystem();
+                    x.BeforeInstall(
+                        () =>
+                        {
+                            File.WriteAllText(UrlFile, args[1]);
+                            File.WriteAllText("inteval.txt", interval);
+                        });
+                    x.SetDescription(string.Format("Requests an url every interval"));
+                    x.SetDisplayName("Requester");
+                    x.SetServiceName("Requester");
+                });
         }
 
         private static void PrintHelp(string entryPoint)
