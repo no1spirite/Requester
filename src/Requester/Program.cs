@@ -24,22 +24,7 @@
         {
             BasicConfigurator.Configure();
 
-            if (args.Length < 2)
-            {
-                Console.WriteLine(args[0]);
-                PrintHelp("args");
-                Environment.Exit(-1);
-            }
-
-            bool isInstallOrUninstall = args[0].Contains("install");
             string interval = "4000";
-
-            int res;
-            if (!int.TryParse(interval, out res))
-            {
-                PrintHelp("interval");
-                Environment.Exit(-1);
-            }
 
             if (!File.Exists(UrlFile))
             {
