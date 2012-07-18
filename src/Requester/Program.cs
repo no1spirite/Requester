@@ -24,26 +24,33 @@
         {
             BasicConfigurator.Configure();
 
-            //if (args.Length < 2)
-            //{
-            //    Console.WriteLine(args[0]);
-            //    PrintHelp("args");
-            //    Environment.Exit(-1);
-            //}
+            if (args.Length < 2)
+            {
+                Console.WriteLine(args[0]);
+                PrintHelp("args");
+                Environment.Exit(-1);
+            }
 
-            //bool isInstallOrUninstall = args[0].Contains("install");
+            bool isInstallOrUninstall = args[0].Contains("install");
             string interval = "4000";
 
-            //int res;
-            //if (!int.TryParse(interval, out res))
-            //{
-            //    PrintHelp("interval");
-            //    Environment.Exit(-1);
-            //}
+            int res;
+            if (!int.TryParse(interval, out res))
+            {
+                PrintHelp("interval");
+                Environment.Exit(-1);
+            }
 
             if (!File.Exists(UrlFile))
             {
-                File.WriteAllText(UrlFile, "http://portfolio-14.apphb.com/");
+                File.WriteAllLines(
+                UrlFile,
+                new[]
+                    {
+                        "http://portfolio-14.apphb.com", "http://biblegravy.apphb.com", "http://instant.apphb.com",
+                        "http://funnymoneycasino.apphb.com", "http://blackjackwcf.apphb.com/blackjack/blackjackservice.svc",
+                        "http://blackjackwcf.apphb.com/chat/chatservice.svc"
+                    });
             }
 
             if (!File.Exists(IntervalFile))
@@ -61,8 +68,7 @@
                         {
                             s.ConstructUsing(name => new Program());
                             s.WhenStarted(
-                                p =>
-                                p.Start(File.ReadAllText(UrlFile), int.Parse(File.ReadAllText(IntervalFile))));
+                                p => p.Start(int.Parse(File.ReadAllText(IntervalFile))));
                             s.WhenStopped(p => p.Stop());
                         });
                     x.RunAsLocalSystem();
@@ -92,7 +98,7 @@
                 "+ entryPoint );
         }
 
-        private void Start(string url, int interval)
+        private void Start(int interval)
         {
             this.tokenSource = new CancellationTokenSource();
             this.token = this.tokenSource.Token;
@@ -101,7 +107,10 @@
             {
                 try
                 {
-                    new HttpClient().GetAsync(url).Wait(20000, this.token);
+                    foreach (string url in File.ReadAllLines(UrlFile))
+                    {
+                        new HttpClient().GetAsync(url).Wait(20000, this.token);
+                    }
                 }
                 catch (Exception e)
                 {
