@@ -94,7 +94,10 @@
                 {
                     foreach (string url in File.ReadAllLines(UrlFile))
                     {
-                        new HttpClient().GetAsync(url).Wait(20000, this.token);
+                        using (var httpClient = new HttpClient())
+                        {
+                            httpClient.GetAsync(url).Wait(20000, this.token);
+                        }
                     }
                 }
                 catch (Exception e)
